@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Humbuk</string>
+    <string name="action_settings">Settings</string>
     <string name="HumbukRssKomentare">http://www.kareljeproste.borec.cz/rsskomentare.php</string>
-    <string name="LoadingKomentare">Načítám poslední komentáře ...</string>
+    <string name="HumbukRssClanky">http://www.kareljeproste.borec.cz/rssclanky.php</string>
+    <string name="HumbukRssKecalroom">http://www.kareljeproste.borec.cz/rsskecalroom.php</string>
+    <string name="Loading">Načítám Karla ...</string>
     <string name="Slunce_Plocha">Slunce Plocha</string>
 </resources>

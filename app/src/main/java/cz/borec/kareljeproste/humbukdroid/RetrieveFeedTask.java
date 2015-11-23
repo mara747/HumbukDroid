@@ -20,11 +20,11 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
 
     private Exception mException;
     private ListView mLv;
-    private MainActivity mMa;
+    private Context mCo;
     private ProgressDialog mPd;
 
-    public RetrieveFeedTask(MainActivity aMa, ListView aLv, ProgressDialog aPd) {
-        this.mMa = aMa;
+    public RetrieveFeedTask(Context aCo, ListView aLv, ProgressDialog aPd) {
+        this.mCo = aCo;
         this.mLv = aLv;
         this.mPd = aPd;
     }
@@ -35,13 +35,13 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
             return asfd.parse();
         } catch (Exception e) {
             this.mException = e;
-            return null;
         }
+        return null;
     }
 
     protected void onPostExecute(List<Message> messages) {
-        ArrayList<Message> arrayOfUsers = new ArrayList<Message>();
-        MessagesAdapter adapter = new MessagesAdapter(this.mMa, messages);
+        ArrayList<Message> arrayOfUsers = new ArrayList<>();
+        MessagesAdapter adapter = new MessagesAdapter(this.mCo, messages);
         mLv.setAdapter(adapter);
 
         mPd.dismiss();
