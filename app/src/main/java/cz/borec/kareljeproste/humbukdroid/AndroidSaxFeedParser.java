@@ -13,9 +13,17 @@ import java.util.List;
 public class AndroidSaxFeedParser extends BaseFeedParser {
 
     static final String RSS = "rss";
+
+    private boolean containImg = false;
+
     public AndroidSaxFeedParser(String feedUrl) {
         super(feedUrl);
     }
+
+    public void setContainImg(boolean aContainImg) {
+        containImg = aContainImg;
+    }
+
 
     public List<Message> parse() {
         final Message currentMessage = new Message();
@@ -23,7 +31,7 @@ public class AndroidSaxFeedParser extends BaseFeedParser {
         final List<Message> messages = new ArrayList<Message>();
         Element channel = root.getChild(BaseFeedParser.CHANNEL);
         Element item = channel.getChild(BaseFeedParser.ITEM);
-        item.setEndElementListener(new EndElementListener(){
+        item.setEndElementListener(new EndElementListener() {
             public void end() {
                 messages.add(currentMessage.copy());
             }
@@ -43,11 +51,20 @@ public class AndroidSaxFeedParser extends BaseFeedParser {
                 currentMessage.setDescription(body);
             }
         });
-        item.getChild(BaseFeedParser.PUB_DATE).setEndTextElementListener(new EndTextElementListener(){
+        item.getChild(BaseFeedParser.PUB_DATE).setEndTextElementListener(new EndTextElementListener() {
             public void end(String body) {
                 currentMessage.setDate(body);
             }
         });
+        if (containImg) {
+            Element image = item.getChild(BaseFeedParser.IMAGE);
+            image.getChild(BaseFeedParser.IMAGE_URL).setEndTextElementListener(new EndTextElementListener(){
+                public void end(String body) {
+                    currentMessage.setImgLink(body);
+                }
+            });
+        }
+
         try {
             InputStream is = this.getInputStream();
             org.xml.sax.ContentHandler ch = root.getContentHandler();

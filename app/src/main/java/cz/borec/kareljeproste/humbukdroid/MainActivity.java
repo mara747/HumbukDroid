@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 4 total pages.
+            return 4;
         }
 
         @Override
@@ -127,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
                     return "ČLÁNKY";
                 case 2:
                     return "KECALROOM";
+                case 3:
+                    return "FOTO";
             }
             return null;
         }
@@ -143,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
         private static ProgressDialog sProgressDialog;
 
-        private RetrieveFeedTask mRTF;
+        private RetrieveFeedTask mRFT;
+        private RetrieveRajceFeedTask mRRajceFT;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -167,16 +170,9 @@ public class MainActivity extends AppCompatActivity {
             ListView listView = (ListView) rootView.findViewById(R.id.listView);
             int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
             ProgressDialog pd = ProgressDialog.show(inflater.getContext(), "", getResources().getString(R.string.Loading), true);
-
-            if (secNum == 1) {
-                mRTF = new RetrieveFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
-            }
-            else if (secNum == 2) {
-                mRTF = new RetrieveFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
-            }
-            else if (secNum == 3) {
-                mRTF = new RetrieveFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
-            }
+            mRFT = new RetrieveFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
+            mRRajceFT = new RetrieveRajceFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
+            mRRajceFT.setImgFeed(true);
             return rootView;
         }
 
@@ -187,13 +183,16 @@ public class MainActivity extends AppCompatActivity {
             int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
 
             if (secNum == 1) {
-                mRTF.execute(getResources().getString(R.string.HumbukRssKomentare));
+                mRFT.execute(getResources().getString(R.string.HumbukRssKomentare));
             }
             else if (secNum == 2) {
-                mRTF.execute(getResources().getString(R.string.HumbukRssClanky));
+                mRFT.execute(getResources().getString(R.string.HumbukRssClanky));
             }
             else if (secNum == 3) {
-                mRTF.execute(getResources().getString(R.string.HumbukRssKecalroom));
+                mRFT.execute(getResources().getString(R.string.HumbukRssKecalroom));
+            }
+            else if (secNum == 4) {
+                mRRajceFT.execute(getResources().getString(R.string.HumbukRssRajce));
             }
         }
     }

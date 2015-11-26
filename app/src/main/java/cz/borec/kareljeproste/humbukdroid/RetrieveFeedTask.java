@@ -19,9 +19,10 @@ import java.util.List;
 public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
 
     private Exception mException;
-    private ListView mLv;
-    private Context mCo;
-    private ProgressDialog mPd;
+    protected ListView mLv;
+    protected Context mCo;
+    protected ProgressDialog mPd;
+    private boolean mImgFeed = false;
 
     public RetrieveFeedTask(Context aCo, ListView aLv, ProgressDialog aPd) {
         this.mCo = aCo;
@@ -29,9 +30,14 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         this.mPd = aPd;
     }
 
+    public void setImgFeed(boolean aImgFeed){
+        mImgFeed = aImgFeed;
+    }
+
     protected List<Message>  doInBackground(String... urls) {
         try {
             AndroidSaxFeedParser asfd = new AndroidSaxFeedParser(urls[0]);
+            asfd.setContainImg(mImgFeed);
             return asfd.parse();
         } catch (Exception e) {
             this.mException = e;
@@ -60,12 +66,12 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
             Message msg = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(cz.borec.kareljeproste.humbukdroid.R.layout.item_message, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message, parent, false);
             }
             // Lookup view for data population
-            TextView tvTitle = (TextView) convertView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.tvTitle);
-            TextView tvDate = (TextView) convertView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.tvDate);
-            TextView tvDescription = (TextView) convertView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.tvDescription);
+            TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+            TextView tvDescription = (TextView) convertView.findViewById(R.id.tvDescription);
             // Populate the data into the template view using the data object
             tvTitle.setText(msg.getTitle());
             tvDate.setText(msg.getDate());

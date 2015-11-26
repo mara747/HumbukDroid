@@ -16,6 +16,7 @@ public class Message implements Comparable<Message>{
     private URL link;
     private String description;
     private Date date;
+    private URL imgLink;
 
     public String getTitle() {
         return title;
@@ -28,7 +29,6 @@ public class Message implements Comparable<Message>{
     public URL getLink() {
         return link;
     }
-
     public void setLink(String link) {
         try {
             this.link = new URL(link);
@@ -36,6 +36,14 @@ public class Message implements Comparable<Message>{
             throw new RuntimeException(e);
         }
     }
+    public void setImgLink(String aImgLink) {
+        try {
+            this.imgLink = new URL(aImgLink);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public URL getImgLink() { return imgLink; }
 
     public String getDescription() {
         return description;
@@ -67,6 +75,7 @@ public class Message implements Comparable<Message>{
         copy.link = link;
         copy.description = description;
         copy.date = date;
+        copy.imgLink = imgLink;
         return copy;
     }
 
@@ -137,3 +146,5 @@ public class Message implements Comparable<Message>{
         return another.date.compareTo(date);
     }
 }
+
+// TODO: dodelat IMG LInky
