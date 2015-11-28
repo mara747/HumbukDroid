@@ -1,6 +1,7 @@
 package cz.borec.kareljeproste.humbukdroid;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +25,6 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +47,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String s="H U m B U K parta";
+        SpannableString ss=  new SpannableString(s);
+        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, 1, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.RED), 2, 3, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.rgb(10,224,14)), 4, 5, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.BLUE), 6, 7, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.rgb(255,165,0)), 8, 9, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 10, 17, 0);
+        setTitle(ss);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -123,11 +135,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "KOMENTÁŘE";
+                    return "KOMENTÁŘ";
                 case 1:
                     return "ČLÁNKY";
                 case 2:
-                    return "KECALROOM";
+                    return "KECAL ROOM";
                 case 3:
                     return "FOTO";
             }
