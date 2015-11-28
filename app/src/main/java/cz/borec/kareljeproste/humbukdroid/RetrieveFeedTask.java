@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,16 +21,18 @@ import java.util.List;
 public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
 
     private Exception mException;
-    protected ListView mLv;
-    protected Context mCo;
     protected ProgressDialog mPd;
+    protected List<Message> mMesssages;
+    private String mRssUrl;
     private boolean mImgFeed = false;
+    protected BaseAdapter mAdp;
     private Xml.Encoding mEncoding = Xml.Encoding.UTF_8;
 
-    public RetrieveFeedTask(Context aCo, ListView aLv, ProgressDialog aPd) {
-        this.mCo = aCo;
-        this.mLv = aLv;
+    public RetrieveFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd) {
         this.mPd = aPd;
+        this.mRssUrl = aRssUrl;
+        this.mMesssages = aMsg;
+        this.mAdp=aAdp;
     }
 
     public void setImgFeed(boolean aImgFeed){
@@ -39,7 +42,7 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
 
     protected List<Message>  doInBackground(String... urls) {
         try {
-            AndroidSaxFeedParser asfd = new AndroidSaxFeedParser(urls[0], mEncoding);
+            AndroidSaxFeedParser asfd = new AndroidSaxFeedParser(mRssUrl, mEncoding);
             asfd.setContainImg(mImgFeed);
             return asfd.parse();
         } catch (Exception e) {
@@ -49,38 +52,11 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
     }
 
     protected void onPostExecute(List<Message> messages) {
-        ArrayList<Message> arrayOfUsers = new ArrayList<>();
-        MessagesAdapter adapter = new MessagesAdapter(this.mCo, messages);
-        mLv.setAdapter(adapter);
-
-        mPd.dismiss();
-        mPd = null;
-    }
-
-    /* ADAPTER */
-    private class MessagesAdapter extends ArrayAdapter<Message> {
-        public MessagesAdapter(Context context, List<Message> msgs) {
-            super(context, 0, msgs);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // Get the data item for this position
-            Message msg = getItem(position);
-            // Check if an existing view is being reused, otherwise inflate the view
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_message, parent, false);
-            }
-            // Lookup view for data population
-            TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-            TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-            TextView tvDescription = (TextView) convertView.findViewById(R.id.tvDescription);
-            // Populate the data into the template view using the data object
-            tvTitle.setText(msg.getTitle());
-            tvDate.setText(msg.getDate());
-            tvDescription.setText(msg.getDescription());
-            // Return the completed view to render on screen
-            return convertView;
+        mMesssages.clear();
+        mMesssages.addAll(messages);
+        mAdp.notifyDataSetChanged();
+        if (mPd != null) {
+            mPd.dismiss();
         }
     }
 }

@@ -17,7 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
-    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public ProgressDialog getProgressDialog() {
-        return mProgressDialog;
-    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -144,10 +144,10 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-        private static ProgressDialog sProgressDialog;
 
         private RetrieveFeedTask mRFT;
-        private RetrieveRajceFeedTask mRRajceFT;
+        private List<Message> mMsgList;
+        private boolean mFirstStart = true;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -162,40 +162,64 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public PlaceholderFragment() {
+            mMsgList = new ArrayList<Message>();
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            ListView listView = (ListView) rootView.findViewById(R.id.listView);
+
             int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
-            ProgressDialog pd = ProgressDialog.show(inflater.getContext(), "", getResources().getString(R.string.Loading), true);
-            mRFT = new RetrieveFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
-            mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
-            mRRajceFT = new RetrieveRajceFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
-            mRRajceFT.setImgFeed(true);
+
+            BaseAdapter ba;
+
+            switch (secNum) {
+                case 1:
+                {
+                    ProgressDialog pd = null;
+                    if (mFirstStart) {
+                        pd = ProgressDialog.show(inflater.getContext(), "", getResources().getString(R.string.Loading), true);
+                        mFirstStart=false;
+                    }
+                    ba = new MessagesAdapter(inflater.getContext(), mMsgList);
+                    mRFT = new RetrieveFeedTask(mMsgList, ba, getResources().getString(R.string.HumbukRssKomentare),pd);
+                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
+                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
+                    break;
+                }
+                case 2:
+                {
+                    ba = new MessagesAdapter(inflater.getContext(), mMsgList);
+                    mRFT = new RetrieveFeedTask(mMsgList, ba,getResources().getString(R.string.HumbukRssClanky),null);
+                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
+                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
+                    break;
+                }
+                case 3:
+                {
+                    ba = new MessagesAdapter(inflater.getContext(), mMsgList);
+                    mRFT = new RetrieveFeedTask(mMsgList, ba,getResources().getString(R.string.HumbukRssKecalroom),null);
+                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
+                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
+                    break;
+                }
+                case 4: {
+                    ba = new LazyAdapter(inflater.getContext(), mMsgList);
+                    mRFT = new RetrieveRajceFeedTask(mMsgList,ba, getResources().getString(R.string.HumbukRssRajce),null);
+                    mRFT.setImgFeed(true);
+                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
+                    break;
+                }
+            }
+
             return rootView;
         }
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-
-            int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
-
-            if (secNum == 1) {
-                mRFT.execute(getResources().getString(R.string.HumbukRssKomentare));
-            }
-            else if (secNum == 2) {
-                mRFT.execute(getResources().getString(R.string.HumbukRssClanky));
-            }
-            else if (secNum == 3) {
-                mRFT.execute(getResources().getString(R.string.HumbukRssKecalroom));
-            }
-            else if (secNum == 4) {
-                mRRajceFT.execute(getResources().getString(R.string.HumbukRssRajce));
-            }
+            mRFT.execute();
         }
     }
 }
