@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,17 +19,15 @@ public class RetrieveRajceFeedTask extends RetrieveFeedTask {
     }
 
     protected void onPostExecute(List<Message> messages) {
-        //ArrayList<Message> arrayOfUsers = new ArrayList<>();
-        //MessagesAdapter adapter = new MessagesAdapter(this.mCo, messages);
+        for (Message msg : messages) {
+            String text = msg.getTitle().substring("humbuk | ".length());
+            msg.setTitle(text);
+        }
+
         LazyAdapter adapter=new LazyAdapter(this.mCo, messages);
         mLv.setAdapter(adapter);
 
         mPd.dismiss();
         mPd = null;
     }
-
-    private String[] mStrings={
-            "http://www.kareljeproste.borec.cz/images/slunce.gif"
-    };
-
 }

@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="100px"
+        android:minWidth="130px"
+        android:paddingLeft="10px"
+        android:paddingTop="10px"
+        android:paddingRight="10px"
+        android:paddingBottom="10px">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rajceImageView"
+            android:contentDescription="@string/RajcePreviewImg"
+            />
+    </FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rajceTextView"
-        />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rajceImageView"
-        android:contentDescription="@string/RajcePreviewImg"
+        android:textSize="16sp"
+        android:textColor="#4F4F4F"
         />
 
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
             int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
             ProgressDialog pd = ProgressDialog.show(inflater.getContext(), "", getResources().getString(R.string.Loading), true);
             mRFT = new RetrieveFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
+            mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
             mRRajceFT = new RetrieveRajceFeedTask(inflater.getContext(),(ListView) rootView.findViewById(cz.borec.kareljeproste.humbukdroid.R.id.listView),pd);
             mRRajceFT.setImgFeed(true);
             return rootView;

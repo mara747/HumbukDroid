@@ -3,6 +3,7 @@ package cz.borec.kareljeproste.humbukdroid;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
     protected Context mCo;
     protected ProgressDialog mPd;
     private boolean mImgFeed = false;
+    private Xml.Encoding mEncoding = Xml.Encoding.UTF_8;
 
     public RetrieveFeedTask(Context aCo, ListView aLv, ProgressDialog aPd) {
         this.mCo = aCo;
@@ -33,10 +35,11 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
     public void setImgFeed(boolean aImgFeed){
         mImgFeed = aImgFeed;
     }
+    public void setEncoding(Xml.Encoding aEncoding) { mEncoding = aEncoding; }
 
     protected List<Message>  doInBackground(String... urls) {
         try {
-            AndroidSaxFeedParser asfd = new AndroidSaxFeedParser(urls[0]);
+            AndroidSaxFeedParser asfd = new AndroidSaxFeedParser(urls[0], mEncoding);
             asfd.setContainImg(mImgFeed);
             return asfd.parse();
         } catch (Exception e) {

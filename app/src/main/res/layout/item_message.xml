@@ -7,20 +7,20 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="26sp"
+        android:textSize="22sp"
         android:textColor="#4F4F4F"
     />
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="14sp"
     />
     <TextView
         android:id="@+id/tvDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textColor="#4F4F4F"
     />
 </LinearLayout>

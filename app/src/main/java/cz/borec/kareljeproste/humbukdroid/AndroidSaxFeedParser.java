@@ -15,9 +15,16 @@ public class AndroidSaxFeedParser extends BaseFeedParser {
     static final String RSS = "rss";
 
     private boolean containImg = false;
+    private Xml.Encoding encoding = Xml.Encoding.UTF_8;
 
     public AndroidSaxFeedParser(String feedUrl) {
         super(feedUrl);
+    }
+
+    public AndroidSaxFeedParser(String feedUrl, Xml.Encoding aEncoding) {
+        this(feedUrl);
+        encoding = aEncoding;
+
     }
 
     public void setContainImg(boolean aContainImg) {
@@ -68,7 +75,7 @@ public class AndroidSaxFeedParser extends BaseFeedParser {
         try {
             InputStream is = this.getInputStream();
             org.xml.sax.ContentHandler ch = root.getContentHandler();
-            Xml.parse(is, Xml.Encoding.ISO_8859_1, ch);
+            Xml.parse(is, encoding, ch);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
