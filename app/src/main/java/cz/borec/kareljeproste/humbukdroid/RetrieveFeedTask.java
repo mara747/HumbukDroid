@@ -52,9 +52,13 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
     }
 
     protected void onPostExecute(List<Message> messages) {
-        mMesssages.clear();
-        mMesssages.addAll(messages);
-        mAdp.notifyDataSetChanged();
+        if (messages!=null)
+            {
+            mMesssages.clear();
+            mMesssages.addAll(messages);
+            mAdp.notifyDataSetChanged();
+            }
+
         if (mPd != null) {
             mPd.dismiss();
         }

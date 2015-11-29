@@ -3,6 +3,7 @@ package cz.borec.kareljeproste.humbukdroid;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -25,6 +26,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, 1, 0);
         ss.setSpan(new ForegroundColorSpan(Color.RED), 2, 3, 0);
         ss.setSpan(new ForegroundColorSpan(Color.rgb(10,224,14)), 4, 5, 0);
-        ss.setSpan(new ForegroundColorSpan(Color.BLUE), 6, 7, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.rgb(100,149,237)), 6, 7, 0);
         ss.setSpan(new ForegroundColorSpan(Color.rgb(255,165,0)), 8, 9, 0);
         ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 10, 17, 0);
         setTitle(ss);
@@ -71,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        //mProgressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.LoadingKomentare), true);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +83,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        RetrieveRajceFeedTaskTimer myTask = new RetrieveRajceFeedTaskTimer();
+        Timer myTimer = new Timer();
+        myTimer.schedule(myTask, 60000, 60000);
     }
 
+    private static String makeFragmentName(int viewPagerId, int index) {
+        return "android:switcher:" + viewPagerId + ":" + index;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,13 +108,30 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.refresh) {
+            for (int i = 0; i<mSectionsPagerAdapter.getCount();i++)
+                {
+                    String fragTag = makeFragmentName(mViewPager.getId(),i);
+                    PlaceholderFragment fragment = (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag(fragTag);
+                    if (fragment!=null)
+                        fragment.retrieveRajceFeedTask(true);
+                }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private class RetrieveRajceFeedTaskTimer extends TimerTask {
+        public void run() {
+            for (int i = 0; i<mSectionsPagerAdapter.getCount();i++)
+            {
+                String fragTag = makeFragmentName(mViewPager.getId(),i);
+                PlaceholderFragment fragment = (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag(fragTag);
+                if (fragment!=null)
+                    fragment.retrieveRajceFeedTask(false);
+            }
+        }
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -157,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        private BaseAdapter mBa;
         private RetrieveFeedTask mRFT;
         private List<Message> mMsgList;
         private boolean mFirstStart = true;
@@ -173,64 +199,83 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
+
         public PlaceholderFragment() {
             mMsgList = new ArrayList<Message>();
+        }
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
+            switch (secNum) {
+                case 1:
+                {
+                    mBa = new MessagesAdapter(getContext(), mMsgList);
+                    break;
+                }
+                case 2:
+                {
+                    mBa = new MessagesAdapter(getContext(), mMsgList);
+                    break;
+                }
+                case 3:
+                {
+                    mBa = new MessagesAdapter(getContext(), mMsgList);
+                    break;
+                }
+                case 4: {
+                    mBa = new LazyAdapter(getContext(), mMsgList);
+                    break;
+                }
+            }
+            retrieveRajceFeedTask(true);
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-            int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
-
-            BaseAdapter ba;
-
-            switch (secNum) {
-                case 1:
-                {
-                    ProgressDialog pd = null;
-                    if (mFirstStart) {
-                        pd = ProgressDialog.show(inflater.getContext(), "", getResources().getString(R.string.Loading), true);
-                        mFirstStart=false;
-                    }
-                    ba = new MessagesAdapter(inflater.getContext(), mMsgList);
-                    mRFT = new RetrieveFeedTask(mMsgList, ba, getResources().getString(R.string.HumbukRssKomentare),pd);
-                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
-                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
-                    break;
-                }
-                case 2:
-                {
-                    ba = new MessagesAdapter(inflater.getContext(), mMsgList);
-                    mRFT = new RetrieveFeedTask(mMsgList, ba,getResources().getString(R.string.HumbukRssClanky),null);
-                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
-                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
-                    break;
-                }
-                case 3:
-                {
-                    ba = new MessagesAdapter(inflater.getContext(), mMsgList);
-                    mRFT = new RetrieveFeedTask(mMsgList, ba,getResources().getString(R.string.HumbukRssKecalroom),null);
-                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
-                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
-                    break;
-                }
-                case 4: {
-                    ba = new LazyAdapter(inflater.getContext(), mMsgList);
-                    mRFT = new RetrieveRajceFeedTask(mMsgList,ba, getResources().getString(R.string.HumbukRssRajce),null);
-                    mRFT.setImgFeed(true);
-                    ((ListView) rootView.findViewById(R.id.listView)).setAdapter(ba);
-                    break;
-                }
-            }
-
+            ((ListView) rootView.findViewById(R.id.listView)).setAdapter(mBa);
             return rootView;
         }
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
+        }
+
+        public void retrieveRajceFeedTask(boolean aShowProgress){
+            ProgressDialog pd = null;
+            if (aShowProgress)
+                pd = ProgressDialog.show(getContext(), "", getResources().getString(R.string.Loading), true);
+            int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
+            switch (secNum) {
+                case 1:
+                {
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssKomentare),pd);
+                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
+                    break;
+                }
+                case 2:
+                {
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssClanky),pd);
+                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
+                    break;
+                }
+                case 3:
+                {
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssKecalroom),pd);
+                    mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
+                    break;
+                }
+                case 4: {
+                    mRFT = new RetrieveRajceFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssRajce),pd);
+                    mRFT.setImgFeed(true);
+                    break;
+                }
+            }
             mRFT.execute();
         }
     }

@@ -21,14 +21,16 @@ public class RetrieveRajceFeedTask extends RetrieveFeedTask {
     }
 
     protected void onPostExecute(List<Message> messages) {
-        for (Message msg : messages) {
-            String text = msg.getTitle().substring("humbuk | ".length());
-            msg.setTitle(text);
+        if (messages!=null)
+        {
+            for (Message msg : messages) {
+                String text = msg.getTitle().substring("humbuk | ".length());
+                msg.setTitle(text);
+            }
+            mMesssages.clear();
+            mMesssages.addAll(messages);
+            mAdp.notifyDataSetChanged();
         }
-
-        mMesssages.clear();
-        mMesssages.addAll(messages);
-        mAdp.notifyDataSetChanged();
         if (mPd != null) {
             mPd.dismiss();
         }

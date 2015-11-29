@@ -8,4 +8,5 @@
     <string name="Loading">Načítám Karla ...</string>
     <string name="Slunce_Plocha">Slunce Plocha</string>
     <string name="RajcePreviewImg">RajcePreviewImg</string>
+    <string name="Refresh">Načti znovu Karla</string>
 </resources>
