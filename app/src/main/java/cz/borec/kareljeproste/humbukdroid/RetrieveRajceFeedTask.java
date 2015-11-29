@@ -16,23 +16,29 @@ import java.util.List;
 public class RetrieveRajceFeedTask extends RetrieveFeedTask {
 
     //public RetrieveRajceFeedTask(List<Message> aMessages, ProgressDialog aPd) {
-    public RetrieveRajceFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd) {
-        super(aMsg, aAdp, aRssUrl, aPd);
+    public RetrieveRajceFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd, Context aCo) {
+        super(aMsg, aAdp, aRssUrl, aPd, aCo);
     }
 
     protected void onPostExecute(List<Message> messages) {
         if (messages!=null)
-        {
+            {
             for (Message msg : messages) {
                 String text = msg.getTitle().substring("humbuk | ".length());
                 msg.setTitle(text);
             }
-            mMesssages.clear();
-            mMesssages.addAll(messages);
-            mAdp.notifyDataSetChanged();
-        }
+                if (mMesssages!=null) {
+                    mMesssages.clear();
+                    mMesssages.addAll(messages);
+                    if (mAdp != null)
+                        mAdp.notifyDataSetChanged();
+                }
+            }
         if (mPd != null) {
             mPd.dismiss();
+        } else if(messages!=null) {
+            Message lastMsg =  messages.get(0);
+            newMsgNotify(0,"Nová Fotogalerie",lastMsg.getTitle(),lastMsg.getRawDate());
         }
     }
 }

@@ -57,6 +57,10 @@ public class Message implements Comparable<Message>{
         return FORMATTEROUT.format(this.date);
     }
 
+    public Date getRawDate() {
+        return this.date;
+    }
+
     public void setDate(String date) {
         // pad the date if necessary
         while (!date.endsWith("00")){

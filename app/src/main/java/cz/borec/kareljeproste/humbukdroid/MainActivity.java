@@ -130,6 +130,19 @@ public class MainActivity extends AppCompatActivity {
                 if (fragment!=null)
                     fragment.retrieveRajceFeedTask(false);
             }
+
+            RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentare),null,getApplicationContext());
+            rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
+            rftKomentare.execute();
+            RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssClanky),null,getApplicationContext());
+            rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
+            rftClanky.execute();
+            RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssKecalroom),null,getApplicationContext());
+            rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
+            rftKecalroom.execute();
+            RetrieveFeedTask rftRajce = new RetrieveRajceFeedTask(null, null, getResources().getString(R.string.HumbukRssRajce),null, getApplicationContext());
+            rftRajce.setImgFeed(true);
+            rftRajce.execute();
         }
     }
 
@@ -254,24 +267,24 @@ public class MainActivity extends AppCompatActivity {
             switch (secNum) {
                 case 1:
                 {
-                    mRFT = new RetrieveFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssKomentare),pd);
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssKomentare),pd,getContext().getApplicationContext());
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
                 case 2:
                 {
-                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssClanky),pd);
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssClanky),pd,getContext().getApplicationContext());
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
                 case 3:
                 {
-                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssKecalroom),pd);
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssKecalroom),pd,getContext().getApplicationContext());
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
                 case 4: {
-                    mRFT = new RetrieveRajceFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssRajce),pd);
+                    mRFT = new RetrieveRajceFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssRajce),pd, getContext().getApplicationContext());
                     mRFT.setImgFeed(true);
                     break;
                 }
