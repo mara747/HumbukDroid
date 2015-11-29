@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
         ss.setSpan(new ForegroundColorSpan(Color.rgb(10,224,14)), 4, 5, 0);
         ss.setSpan(new ForegroundColorSpan(Color.rgb(100,149,237)), 6, 7, 0);
         ss.setSpan(new ForegroundColorSpan(Color.rgb(255,165,0)), 8, 9, 0);
-        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 10, 17, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 10, s.length(), 0);
+        ss.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, s.length(), 0);
         setTitle(ss);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         RetrieveRajceFeedTaskTimer myTask = new RetrieveRajceFeedTaskTimer();
         Timer myTimer = new Timer();
-        myTimer.schedule(myTask, 60000, 60000);
+        myTimer.schedule(myTask, 60000, 90000);
     }
 
     private static String makeFragmentName(int viewPagerId, int index) {
@@ -128,21 +130,39 @@ public class MainActivity extends AppCompatActivity {
                 String fragTag = makeFragmentName(mViewPager.getId(),i);
                 PlaceholderFragment fragment = (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag(fragTag);
                 if (fragment!=null)
+                {
                     fragment.retrieveRajceFeedTask(false);
+                }
+                else
+                {
+                    switch(i) {
+                        case 0:{
+                            RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentare),null,getApplicationContext());
+                            rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
+                            rftKomentare.execute();
+                            break;
+                        }
+                        case 1:{
+                            RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssClanky),null,getApplicationContext());
+                            rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
+                            rftClanky.execute();
+                            break;
+                        }
+                        case 2:{
+                            RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssKecalroom),null,getApplicationContext());
+                            rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
+                            rftKecalroom.execute();
+                            break;
+                        }
+                        case 3:{
+                            RetrieveFeedTask rftRajce = new RetrieveRajceFeedTask(null, null, getResources().getString(R.string.HumbukRssRajce),null, getApplicationContext());
+                            rftRajce.setImgFeed(true);
+                            rftRajce.execute();
+                            break;
+                        }
+                    }
+                }
             }
-
-            RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentare),null,getApplicationContext());
-            rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
-            rftKomentare.execute();
-            RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssClanky),null,getApplicationContext());
-            rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
-            rftClanky.execute();
-            RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssKecalroom),null,getApplicationContext());
-            rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
-            rftKecalroom.execute();
-            RetrieveFeedTask rftRajce = new RetrieveRajceFeedTask(null, null, getResources().getString(R.string.HumbukRssRajce),null, getApplicationContext());
-            rftRajce.setImgFeed(true);
-            rftRajce.execute();
         }
     }
 

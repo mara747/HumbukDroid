@@ -41,7 +41,7 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         this.mMesssages = aMsg;
         this.mAdp=aAdp;
         this.mCo=aCo;
-        mBuilder = new NotificationCompat.Builder(aCo);
+        this.mBuilder = new NotificationCompat.Builder(aCo);
     }
 
     public void setImgFeed(boolean aImgFeed){
