@@ -1,6 +1,7 @@
 package cz.borec.kareljeproste.humbukdroid;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -88,7 +89,10 @@ public class MainActivity extends AppCompatActivity {
 
         RetrieveRajceFeedTaskTimer myTask = new RetrieveRajceFeedTaskTimer();
         Timer myTimer = new Timer();
-        myTimer.schedule(myTask, 60000, 90000);
+        myTimer.schedule(myTask, 60000, 60000);
+
+        Intent intent = new Intent(this, RetrieveFeedsService.class);
+        startService(intent);
     }
 
     private static String makeFragmentName(int viewPagerId, int index) {
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                     String fragTag = makeFragmentName(mViewPager.getId(),i);
                     PlaceholderFragment fragment = (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag(fragTag);
                     if (fragment!=null)
-                        fragment.retrieveRajceFeedTask(true);
+                        fragment.retrieveFeedsTask(true);
                 }
         }
 
@@ -131,37 +135,37 @@ public class MainActivity extends AppCompatActivity {
                 PlaceholderFragment fragment = (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag(fragTag);
                 if (fragment!=null)
                 {
-                    fragment.retrieveRajceFeedTask(false);
+                    fragment.retrieveFeedsTask(false);
                 }
-                else
-                {
-                    switch(i) {
-                        case 0:{
-                            RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentare),null,getApplicationContext());
-                            rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
-                            rftKomentare.execute();
-                            break;
-                        }
-                        case 1:{
-                            RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssClanky),null,getApplicationContext());
-                            rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
-                            rftClanky.execute();
-                            break;
-                        }
-                        case 2:{
-                            RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssKecalroom),null,getApplicationContext());
-                            rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
-                            rftKecalroom.execute();
-                            break;
-                        }
-                        case 3:{
-                            RetrieveFeedTask rftRajce = new RetrieveRajceFeedTask(null, null, getResources().getString(R.string.HumbukRssRajce),null, getApplicationContext());
-                            rftRajce.setImgFeed(true);
-                            rftRajce.execute();
-                            break;
-                        }
-                    }
-                }
+//                else
+//                {
+//                    switch(i) {
+//                        case 0:{
+//                            RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentare),null,getApplicationContext());
+//                            rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
+//                            rftKomentare.execute();
+//                            break;
+//                        }
+//                        case 1:{
+//                            RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssClanky),null,getApplicationContext());
+//                            rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
+//                            rftClanky.execute();
+//                            break;
+//                        }
+//                        case 2:{
+//                            RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssKecalroom),null,getApplicationContext());
+//                            rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
+//                            rftKecalroom.execute();
+//                            break;
+//                        }
+//                        case 3:{
+//                            RetrieveFeedTask rftRajce = new RetrieveRajceFeedTask(null, null, getResources().getString(R.string.HumbukRssRajce),null, getApplicationContext());
+//                            rftRajce.setImgFeed(true);
+//                            rftRajce.execute();
+//                            break;
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -263,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
             }
-            retrieveRajceFeedTask(true);
+            retrieveFeedsTask(true);
         }
 
         @Override
@@ -279,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
             super.onActivityCreated(savedInstanceState);
         }
 
-        public void retrieveRajceFeedTask(boolean aShowProgress){
+        public void retrieveFeedsTask(boolean aShowProgress){
             ProgressDialog pd = null;
             if (aShowProgress)
                 pd = ProgressDialog.show(getContext(), "", getResources().getString(R.string.Loading), true);

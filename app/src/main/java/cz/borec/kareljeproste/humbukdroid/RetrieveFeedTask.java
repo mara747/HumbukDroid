@@ -1,9 +1,14 @@
 package cz.borec.kareljeproste.humbukdroid;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.util.Xml;
@@ -14,7 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import android.app.Activity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -87,15 +92,26 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         {
             if (aPubDate.getTime()>prefPubDate)
             {
+                Intent resultIntent = new Intent(mCo, MainActivity.class);
+                PendingIntent resultPendingIntent =
+                        PendingIntent.getActivity(
+                                mCo,
+                                0,
+                                resultIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+                mBuilder.setContentIntent(resultPendingIntent);
                 editor.putLong("pubDate", aPubDate.getTime());
                 mBuilder.setSmallIcon(R.drawable.slunce);
                 mBuilder.setContentTitle(aTitle);
                 mBuilder.setContentText(aText);
                 NotificationManager mNotifyMgr =
                         (NotificationManager) mCo.getSystemService(mCo.NOTIFICATION_SERVICE);
-                mNotifyMgr.notify(aId, mBuilder.build());
-            }
 
+                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                mBuilder.setSound(alarmSound);
+                mNotifyMgr.notify(aId,mBuilder.build());
+            }
         }
         else
         {
