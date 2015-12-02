@@ -1,6 +1,9 @@
 package cz.borec.kareljeproste.humbukdroid;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,6 +30,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    public static final long REFRESH_SCREEN_TIME = 1000 * 60;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -89,10 +95,14 @@ public class MainActivity extends AppCompatActivity {
 
         RetrieveRajceFeedTaskTimer myTask = new RetrieveRajceFeedTaskTimer();
         Timer myTimer = new Timer();
-        myTimer.schedule(myTask, 60000, 60000);
+        myTimer.schedule(myTask, REFRESH_SCREEN_TIME, REFRESH_SCREEN_TIME);
 
+        Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(this, RetrieveFeedsService.class);
-        startService(intent);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+
+        AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), RetrieveFeedsService.REPEAT_TIME, pintent);
     }
 
     private static String makeFragmentName(int viewPagerId, int index) {
@@ -137,35 +147,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     fragment.retrieveFeedsTask(false);
                 }
-//                else
-//                {
-//                    switch(i) {
-//                        case 0:{
-//                            RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentare),null,getApplicationContext());
-//                            rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
-//                            rftKomentare.execute();
-//                            break;
-//                        }
-//                        case 1:{
-//                            RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssClanky),null,getApplicationContext());
-//                            rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
-//                            rftClanky.execute();
-//                            break;
-//                        }
-//                        case 2:{
-//                            RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null,getResources().getString(R.string.HumbukRssKecalroom),null,getApplicationContext());
-//                            rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
-//                            rftKecalroom.execute();
-//                            break;
-//                        }
-//                        case 3:{
-//                            RetrieveFeedTask rftRajce = new RetrieveRajceFeedTask(null, null, getResources().getString(R.string.HumbukRssRajce),null, getApplicationContext());
-//                            rftRajce.setImgFeed(true);
-//                            rftRajce.execute();
-//                            break;
-//                        }
-//                    }
-//                }
             }
         }
     }
