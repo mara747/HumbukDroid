@@ -5,6 +5,10 @@
     <string name="HumbukRssClanky">http://www.kareljeproste.borec.cz/rssclanky.php</string>
     <string name="HumbukRssKecalroom">http://www.kareljeproste.borec.cz/rsskecalroom.php</string>
     <string name="HumbukRssRajce">http://humbuk.rajce.idnes.cz/?rss=news</string>
+    <string name="HumbukRssKomentareTop1">http://www.kareljeproste.borec.cz/rsskomentaretop1.php</string>
+    <string name="HumbukRssClankyTop1">http://www.kareljeproste.borec.cz/rssclankytop1.php</string>
+    <string name="HumbukRssKecalroomTop1">http://www.kareljeproste.borec.cz/rsskecalroomtop1.php</string>
+    <string name="HumbukRssRajceTop1">http://kareljeproste.borec.cz/rssfotogalerietop1.php</string>
     <string name="Loading">Načítám Karla ...</string>
     <string name="Slunce_Plocha">Slunce Plocha</string>
     <string name="RajcePreviewImg">RajcePreviewImg</string>

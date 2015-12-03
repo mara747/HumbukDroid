@@ -35,17 +35,16 @@ public class RetrieveFeedsService extends Service {
                 //Your logic that service will perform will be placed here
                 //In this example we are just looping and waits for 1000 milliseconds in each loop.
                 try {
-                    RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentare), null, getApplicationContext());
+                    RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentareTop1), null, getApplicationContext());
                     rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
                     rftKomentare.execute();
-                    RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssClanky), null, getApplicationContext());
+                    RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssClankyTop1), null, getApplicationContext());
                     rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
                     rftClanky.execute();
-                    RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKecalroom), null, getApplicationContext());
+                    RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKecalroomTop1), null, getApplicationContext());
                     rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
                     rftKecalroom.execute();
-                    RetrieveFeedTask rftRajce = new RetrieveRajceFeedTask(null, null, getResources().getString(R.string.HumbukRssRajce), null, getApplicationContext());
-                    rftRajce.setImgFeed(true);
+                    RetrieveFeedTask rftRajce = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssRajceTop1), null, getApplicationContext());
                     rftRajce.execute();
                 } catch (Exception e) {
                     notifyMsg("Chyba při čtení Karla - kontaktuj Máru:",e.getMessage());
