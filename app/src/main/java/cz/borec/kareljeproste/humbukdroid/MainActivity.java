@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -49,6 +48,19 @@ public class MainActivity extends AppCompatActivity {
 
     public static final long REFRESH_SCREEN_TIME = 1000 * 60;
 
+    public static SpannableString getTitleHumbukString(){
+        String s="H U m B U K parta";
+        SpannableString ss=  new SpannableString(s);
+        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, 1, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.RED), 2, 3, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.rgb(10,224,14)), 4, 5, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.rgb(100,149,237)), 6, 7, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.rgb(255,165,0)), 8, 9, 0);
+        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 10, s.length(), 0);
+        ss.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, s.length(), 0);
+        return ss;
+    }
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -59,16 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String s="H U m B U K parta";
-        SpannableString ss=  new SpannableString(s);
-        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, 1, 0);
-        ss.setSpan(new ForegroundColorSpan(Color.RED), 2, 3, 0);
-        ss.setSpan(new ForegroundColorSpan(Color.rgb(10,224,14)), 4, 5, 0);
-        ss.setSpan(new ForegroundColorSpan(Color.rgb(100,149,237)), 6, 7, 0);
-        ss.setSpan(new ForegroundColorSpan(Color.rgb(255,165,0)), 8, 9, 0);
-        ss.setSpan(new ForegroundColorSpan(Color.YELLOW), 10, s.length(), 0);
-        ss.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, s.length(), 0);
-        setTitle(ss);
+        setTitle(getTitleHumbukString());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabComment);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Hudba budoucnosti :)", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(), SendCommentActivity.class);
+                startActivity(intent);
             }
         });
 

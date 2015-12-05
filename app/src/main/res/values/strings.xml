@@ -13,4 +13,5 @@
     <string name="Slunce_Plocha">Slunce Plocha</string>
     <string name="RajcePreviewImg">RajcePreviewImg</string>
     <string name="Refresh">Načti znovu Karla</string>
+    <string name="SendCommentTitle">Odeslání komentáře</string>
 </resources>
