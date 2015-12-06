@@ -1,5 +1,6 @@
 package cz.borec.kareljeproste.humbukdroid;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -47,7 +48,7 @@ public class RetrieveFeedsService extends Service {
                     RetrieveFeedTask rftRajce = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssRajceTop1), null, getApplicationContext());
                     rftRajce.execute();
                 } catch (Exception e) {
-                    notifyMsg("Chyba při čtení Karla - kontaktuj Máru:",e.getMessage());
+                    RetrieveFeedTask.notifyMsg(001, "Chyba při čtení Karla - kontaktuj Máru:", e.getMessage(), mBuilder, getApplicationContext());
                 }
             }
         }).start();
@@ -59,26 +60,5 @@ public class RetrieveFeedsService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private void notifyMsg(String aTitle, String aDescr) {
-        Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        getApplicationContext(),
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        mBuilder.setSmallIcon(R.drawable.slunce);
-        mBuilder.setContentTitle(aTitle);
-        mBuilder.setContentText(aDescr);
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getApplicationContext().getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        mBuilder.setSound(alarmSound);
-        mNotifyMgr.notify(001,mBuilder.build());
     }
 }

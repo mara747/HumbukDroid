@@ -40,6 +40,29 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
     protected NotificationCompat.Builder mBuilder;
     protected Context mCo;
 
+    public static void notifyMsg(int aId, String aTitle, String aDescr, NotificationCompat.Builder aBuilder, Context aCo) {
+        Intent resultIntent = new Intent(aCo, MainActivity.class);
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        aCo,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        aBuilder.setContentIntent(resultPendingIntent);
+        aBuilder.setSmallIcon(R.drawable.slunce);
+        aBuilder.setContentTitle(aTitle);
+        aBuilder.setContentText(aDescr);
+        NotificationManager mNotifyMgr =
+                (NotificationManager) aCo.getSystemService(aCo.NOTIFICATION_SERVICE);
+
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        aBuilder.setSound(alarmSound);
+        Notification notification = aBuilder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        mNotifyMgr.notify(aId, notification);
+    }
+
     public RetrieveFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd, Context aCo) {
         this.mPd = aPd;
         this.mRssUrl = aRssUrl;
@@ -92,25 +115,7 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         {
             if (aPubDate.getTime()>prefPubDate)
             {
-                Intent resultIntent = new Intent(mCo, MainActivity.class);
-                PendingIntent resultPendingIntent =
-                        PendingIntent.getActivity(
-                                mCo,
-                                0,
-                                resultIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT
-                        );
-                mBuilder.setContentIntent(resultPendingIntent);
-                editor.putLong("pubDate", aPubDate.getTime());
-                mBuilder.setSmallIcon(R.drawable.slunce);
-                mBuilder.setContentTitle(aTitle);
-                mBuilder.setContentText(aText);
-                NotificationManager mNotifyMgr =
-                        (NotificationManager) mCo.getSystemService(mCo.NOTIFICATION_SERVICE);
-
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mBuilder.setSound(alarmSound);
-                mNotifyMgr.notify(aId,mBuilder.build());
+                RetrieveFeedTask.notifyMsg(aId,aTitle,aText,mBuilder,mCo);
             }
         }
         else
