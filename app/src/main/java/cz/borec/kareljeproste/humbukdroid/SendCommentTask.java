@@ -38,7 +38,7 @@ public class SendCommentTask extends AsyncTask<String, Void, Void> {
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(os, "ISO_8859_1"));
+                    new OutputStreamWriter(os, "Windows-1250"));
             writer.write(getQuery(paramsPost));
             writer.flush();
             writer.close();
@@ -69,9 +69,9 @@ public class SendCommentTask extends AsyncTask<String, Void, Void> {
             else
                 result.append("&");
 
-            result.append(URLEncoder.encode(pair.getKey(), "ISO_8859_1"));
+            result.append(URLEncoder.encode(pair.getKey(), "Windows-1250"));
             result.append("=");
-            result.append(URLEncoder.encode(pair.getValue().toString(), "ISO_8859_1"));
+            result.append(URLEncoder.encode(pair.getValue().toString(), "Windows-1250"));
         }
 
         return result.toString();

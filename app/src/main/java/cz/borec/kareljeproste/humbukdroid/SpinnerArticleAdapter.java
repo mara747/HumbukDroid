@@ -2,6 +2,8 @@ package cz.borec.kareljeproste.humbukdroid;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -39,7 +41,10 @@ public class SpinnerArticleAdapter  extends ArrayAdapter<Message> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView label = new TextView(mContext);
-        label.setTextColor(Color.BLACK);
+        label.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
+        label.setTextColor(0xFF4F4F4F);
+        label.setMinLines(2);
+        label.setGravity(Gravity.CENTER_VERTICAL);
         label.setText(mMessages.get(position).getTitle());
         return label;
     }
@@ -48,7 +53,10 @@ public class SpinnerArticleAdapter  extends ArrayAdapter<Message> {
     public View getDropDownView(int position, View convertView,
                                 ViewGroup parent) {
         TextView label = new TextView(mContext);
-        label.setTextColor(Color.BLACK);
+        label.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
+        label.setTextColor(0xFF4F4F4F);
+        label.setMinLines(2);
+        label.setGravity(Gravity.CENTER_VERTICAL);
         label.setText(mMessages.get(position).getTitle());
         return label;
     }

@@ -38,15 +38,15 @@ public class RetrieveFeedsService extends Service {
                 try {
                     RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentareTop1), null, getApplicationContext());
                     rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
-                    rftKomentare.execute();
+                    rftKomentare.execute().get();
                     RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssClankyTop1), null, getApplicationContext());
                     rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
-                    rftClanky.execute();
+                    rftClanky.execute().get();
                     RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKecalroomTop1), null, getApplicationContext());
                     rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
-                    rftKecalroom.execute();
+                    rftKecalroom.execute().get();
                     RetrieveFeedTask rftRajce = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssRajceTop1), null, getApplicationContext());
-                    rftRajce.execute();
+                    rftRajce.execute().get();
                 } catch (Exception e) {
                     RetrieveFeedTask.notifyMsg(001, "Chyba při čtení Karla - kontaktuj Máru:", e.getMessage(), mBuilder, getApplicationContext());
                 }

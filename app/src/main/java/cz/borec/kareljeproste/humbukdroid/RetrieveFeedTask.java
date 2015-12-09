@@ -116,6 +116,7 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
             if (aPubDate.getTime()>prefPubDate)
             {
                 RetrieveFeedTask.notifyMsg(aId,aTitle,aText,mBuilder,mCo);
+                editor.putLong("pubDate", aPubDate.getTime());
             }
         }
         else

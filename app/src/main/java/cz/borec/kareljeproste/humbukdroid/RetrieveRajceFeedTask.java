@@ -38,7 +38,7 @@ public class RetrieveRajceFeedTask extends RetrieveFeedTask {
             mPd.dismiss();
         } else if(messages!=null) {
             Message lastMsg =  messages.get(0);
-            newMsgNotify(0,"Nová Fotoalbum",lastMsg.getTitle(),lastMsg.getRawDate());
+            newMsgNotify(0,"Nové Fotoalbum",lastMsg.getTitle(),lastMsg.getRawDate());
         }
     }
 }
