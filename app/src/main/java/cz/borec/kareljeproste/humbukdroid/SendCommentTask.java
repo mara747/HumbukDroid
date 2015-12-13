@@ -12,15 +12,27 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 
 /**
  * Created by Mara on 5.12.2015.
  */
-public class SendCommentTask extends AsyncTask<String, Void, Void> {
+public class SendCommentTask extends AsyncTask<String, Void, Boolean> {
+
+    public interface AsyncResponse {
+        void processFinish(Boolean output);
+    }
+
+    public AsyncResponse delegate = null;
+
+    public SendCommentTask(AsyncResponse delegate){
+        this.delegate = delegate;
+    }
+
     @Override
-    protected Void doInBackground(String... params) {
+    protected Boolean doInBackground(String... params) {
         try {
             URL url = new URL(params[0]);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -52,9 +64,14 @@ public class SendCommentTask extends AsyncTask<String, Void, Void> {
             conn.connect();
         } catch (Exception e)
         {
-            return null;
+            return false;
         }
-        return null;
+        return true;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+        delegate.processFinish(result);
     }
 
     private String getQuery(ContentValues params) throws UnsupportedEncodingException

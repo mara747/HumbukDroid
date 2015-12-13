@@ -115,7 +115,12 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         {
             if (aPubDate.getTime()>prefPubDate)
             {
-                RetrieveFeedTask.notifyMsg(aId,aTitle,aText,mBuilder,mCo);
+                Boolean isMyMsg = settings.getBoolean("myMsgSent", false);
+                if (!isMyMsg) {
+                    RetrieveFeedTask.notifyMsg(aId, aTitle, aText, mBuilder, mCo);
+                } else {
+                    editor.putBoolean("myMsgSent", false);
+                }
                 editor.putLong("pubDate", aPubDate.getTime());
             }
         }

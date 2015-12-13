@@ -14,4 +14,9 @@
     <string name="RajcePreviewImg">RajcePreviewImg</string>
     <string name="Refresh">Načti znovu Karla</string>
     <string name="SendCommentTitle">Komentář:</string>
+    <string name="SendCommentMsgErr">Karle, něco se posralo! Uložím si text do paměti a ty to zkusíš za chvilku jo?</string>
+    <string name="SendCommentMsgOK">Je to tam Karle!</string>
+    <string name="SendCommentMsgNoLink">Nahoře je přece napsaný, že se seznam zatím nenačetl ...</string>
+    <string name="SendCommentDefaultTitle">Seznam článků se zatím nenačetl ...</string>
+    <string name="SendCommentKecalroomTitle">Kecalroom</string>
 </resources>

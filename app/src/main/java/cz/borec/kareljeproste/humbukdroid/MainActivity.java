@@ -86,16 +86,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabComment);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SendCommentActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
         RetrieveRajceFeedTaskTimer myTask = new RetrieveRajceFeedTaskTimer();
         Timer myTimer = new Timer();
         myTimer.schedule(myTask, REFRESH_SCREEN_TIME, REFRESH_SCREEN_TIME);
@@ -201,12 +191,16 @@ public class MainActivity extends AppCompatActivity {
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+        public static final String ARG_SECTION_NUMBER = "section_number";
+        public static final int ARG_SECTION_KOMENTARE = 1;
+        public static final int ARG_SECTION_CLANKY = 2;
+        public static final int ARG_SECTION_KECALROOM = 3;
+        public static final int ARG_SECTION_FOTO = 4;
 
         private BaseAdapter mBa;
         private RetrieveFeedTask mRFT;
         private List<Message> mMsgList;
-        private boolean mFirstStart = true;
+        private boolean refreshOnResume=false;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -220,9 +214,19 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
-
         public PlaceholderFragment() {
             mMsgList = new ArrayList<Message>();
+        }
+
+        @Override
+        public void onResume()
+        {
+            if (refreshOnResume)
+            {
+                retrieveFeedsTask(true);
+                refreshOnResume=false;
+            }
+            super.onResume();
         }
 
         @Override
@@ -231,22 +235,22 @@ public class MainActivity extends AppCompatActivity {
 
             int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
             switch (secNum) {
-                case 1:
+                case ARG_SECTION_KOMENTARE:
                 {
                     mBa = new MessagesAdapter(getContext(), mMsgList);
                     break;
                 }
-                case 2:
+                case ARG_SECTION_CLANKY:
                 {
                     mBa = new MessagesAdapter(getContext(), mMsgList);
                     break;
                 }
-                case 3:
+                case ARG_SECTION_KECALROOM:
                 {
                     mBa = new MessagesAdapter(getContext(), mMsgList);
                     break;
                 }
-                case 4: {
+                case ARG_SECTION_FOTO: {
                     mBa = new LazyAdapter(getContext(), mMsgList);
                     break;
                 }
@@ -264,6 +268,43 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
+
+            FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.fabComment);
+            final int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
+            switch (secNum) {
+                case ARG_SECTION_KOMENTARE: {
+                    fab.setVisibility(View.VISIBLE);
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            refreshOnResume=true;
+                            Intent intent = new Intent(getContext(), SendCommentActivity.class);
+                            intent.putExtra(ARG_SECTION_NUMBER, secNum);
+                            startActivity(intent);
+                        }
+                    });
+                    break;
+                }
+                case ARG_SECTION_CLANKY: {
+                    break;
+                }
+                case ARG_SECTION_KECALROOM: {
+                    fab.setVisibility(View.VISIBLE);
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            refreshOnResume=true;
+                            Intent intent=new Intent(getContext(), SendCommentActivity.class);
+                            intent.putExtra(ARG_SECTION_NUMBER, secNum);
+                            startActivity(intent);
+                        }
+                    });
+                    break;
+                }
+                case ARG_SECTION_FOTO: {
+                    break;
+                }
+            }
             super.onActivityCreated(savedInstanceState);
         }
 
@@ -273,25 +314,25 @@ public class MainActivity extends AppCompatActivity {
                 pd = ProgressDialog.show(getContext(), "", getResources().getString(R.string.Loading), true);
             int secNum = getArguments().getInt(ARG_SECTION_NUMBER);
             switch (secNum) {
-                case 1:
+                case ARG_SECTION_KOMENTARE:
                 {
                     mRFT = new RetrieveFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssKomentare),pd,getContext().getApplicationContext());
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
-                case 2:
+                case ARG_SECTION_CLANKY:
                 {
                     mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssClanky),pd,getContext().getApplicationContext());
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
-                case 3:
+                case ARG_SECTION_KECALROOM:
                 {
                     mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssKecalroom),pd,getContext().getApplicationContext());
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
-                case 4: {
+                case ARG_SECTION_FOTO: {
                     mRFT = new RetrieveRajceFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssRajce),pd, getContext().getApplicationContext());
                     mRFT.setImgFeed(true);
                     break;

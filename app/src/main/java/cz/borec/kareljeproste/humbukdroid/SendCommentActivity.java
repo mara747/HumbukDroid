@@ -3,6 +3,7 @@ package cz.borec.kareljeproste.humbukdroid;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +17,12 @@ import android.widget.Toast;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class SendCommentActivity extends AppCompatActivity {
+
+    private final long MINUTE_IN_MILLISECONDS = 60 * 1000;
 
     private Spinner mSpinnerArticle;
     private SpinnerArticleAdapter mAdapter;
@@ -27,29 +31,48 @@ public class SendCommentActivity extends AppCompatActivity {
 
     public SendCommentActivity() {
         mMsgList = new ArrayList<Message>();
-        Message msg = new Message();
-        msg.setTitle("Seznam článků se zatím nenačetl ...");
-        mMsgList.add(msg);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_comment);
+
+        final int secNum;
+        Bundle extras = getIntent().getExtras();
+        secNum = extras.getInt(MainActivity.PlaceholderFragment.ARG_SECTION_NUMBER,MainActivity.PlaceholderFragment.ARG_SECTION_KOMENTARE);
         setTitle(MainActivity.getTitleHumbukString());
+
         mCtx = this;
+        SharedPreferences settings = mCtx.getSharedPreferences("HumbukDroidPrefsName", 0);
+        ((EditText)findViewById(R.id.editTextName)).setText(settings.getString("name",""));
+        ((EditText)findViewById(R.id.editTextEmail)).setText(settings.getString("email",""));
+        ((EditText)findViewById(R.id.editTextText)).setText(settings.getString("text",""));
         mAdapter = new SpinnerArticleAdapter(this,android.R.layout.simple_spinner_item,mMsgList);
+
+        Message msg = new Message();
+        if (secNum==MainActivity.PlaceholderFragment.ARG_SECTION_KOMENTARE)
+        {
+            msg.setTitle(getResources().getString(R.string.SendCommentDefaultTitle));
+            mMsgList.add(msg);
+            ProgressDialog pd = ProgressDialog.show(mCtx, "", getResources().getString(R.string.Loading), true);
+            new RetrieveFeedTask(mMsgList, mAdapter,getResources().getString(R.string.HumbukRssClanky),pd,this).execute();
+        } else if (secNum==MainActivity.PlaceholderFragment.ARG_SECTION_KECALROOM)
+        {
+            msg = new Message();
+            msg.setTitle( getResources().getString(R.string.SendCommentKecalroomTitle));
+            msg.setLink("http://www.kareljeproste.borec.cz/index1.php?clanek=kecalroom&p=0");
+            mMsgList.add(msg);
+        }
+
         mSpinnerArticle = ((Spinner)findViewById(R.id.spinnerArticle));
         mSpinnerArticle.setAdapter(mAdapter);
-        ProgressDialog pd = ProgressDialog.show(mCtx, "", getResources().getString(R.string.Loading), true);
-        new RetrieveFeedTask(mMsgList, mAdapter,getResources().getString(R.string.HumbukRssClanky),pd,this).execute();
 
         mSpinnerArticle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
                 mAdapter.getItem(position);
-                //Toast.makeText(mCtx,msg.getTitle(),Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -62,17 +85,63 @@ public class SendCommentActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mMsgList.get(0).getLink();
-                String name = ((EditText) findViewById(R.id.editTextName)).getText().toString();
-                String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
-                String text = ((EditText) findViewById(R.id.editTextText)).getText().toString();
-
-                URL url = mMsgList.get(mSpinnerArticle.getSelectedItemPosition()).getLink();
+                final String name = ((EditText) findViewById(R.id.editTextName)).getText().toString();
+                final String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
+                final String text = ((EditText) findViewById(R.id.editTextText)).getText().toString();
+                final URL url = mMsgList.get(mSpinnerArticle.getSelectedItemPosition()).getLink();
+                final SharedPreferences settings = mCtx.getSharedPreferences("HumbukDroidPrefsName", 0);
+                final SharedPreferences.Editor editor = settings.edit();
                 if (url!=null)
                 {
-                    String lnk = url.toExternalForm();
-                    new SendCommentTask().execute(lnk, "4", name, email, text);
+                    if(name.isEmpty()) {
+                        Toast.makeText(mCtx,"Jméno Karle!",Toast.LENGTH_SHORT).show();
+                    } else if (text.isEmpty()) {
+                        Toast.makeText(mCtx,"Ještě text Karle!",Toast.LENGTH_SHORT).show();
+                    } else {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String lnk = url.toExternalForm();
+                                    new SendCommentTask(
+                                            new SendCommentTask.AsyncResponse(){
+                                                @Override
+                                                public void processFinish(Boolean result){
+                                                    if (result) {
+                                                        editor.putString("text", "");
+                                                        editor.putBoolean("myMsgSent", true);
+                                                        editor.commit();
+                                                        Toast.makeText(mCtx,getResources().getString(R.string.SendCommentMsgOK),Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        editor.putString("text", text);
+                                                        editor.commit();
+                                                        Toast.makeText(mCtx,getResources().getString(R.string.SendCommentMsgErr),Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+                                            }
+                                    ).execute(lnk, "4", name, email, text).get();
+
+                                    Calendar c = Calendar.getInstance();
+                                    editor.putLong("pubDate", c.getTimeInMillis());
+                                    editor.commit();
+                                } catch (Exception e) {
+                                    editor.putString("text", text);
+                                    editor.commit();
+                                    Toast.makeText(mCtx,getResources().getString(R.string.SendCommentMsgErr),Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }).start();
+                        editor.putString("name", name);
+                        editor.putString("email", email);
+                        editor.commit();
+                        finish();
+                    }
+                } else {
+                    editor.putString("text", text);
+                    editor.commit();
+                    Toast.makeText(mCtx,getResources().getString(R.string.SendCommentMsgNoLink),Toast.LENGTH_SHORT).show();
                 }
-                finish();
+
             }
         });
 
