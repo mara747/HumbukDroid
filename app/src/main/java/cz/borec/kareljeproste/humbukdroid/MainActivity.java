@@ -126,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
                         fragment.retrieveFeedsTask(true);
                 }
         }
+        else if (id==R.id.about)
+        {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
