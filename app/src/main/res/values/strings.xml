@@ -19,4 +19,6 @@
     <string name="SendCommentMsgNoLink">Nahoře je přece napsaný, že se seznam zatím nenačetl ...</string>
     <string name="SendCommentDefaultTitle">Seznam článků se zatím nenačetl ...</string>
     <string name="SendCommentKecalroomTitle">Kecalroom</string>
+    <string name="SendCommentNameErr">"Jméno Karle!"</string>
+    <string name="SendCommentTextErr">"Ještě text Karle!"</string>
 </resources>

@@ -94,9 +94,9 @@ public class SendCommentActivity extends AppCompatActivity {
                 if (url!=null)
                 {
                     if(name.isEmpty()) {
-                        Toast.makeText(mCtx,"Jméno Karle!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mCtx,getResources().getString(R.string.SendCommentNameErr),Toast.LENGTH_SHORT).show();
                     } else if (text.isEmpty()) {
-                        Toast.makeText(mCtx,"Ještě text Karle!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mCtx,getResources().getString(R.string.SendCommentTextErr),Toast.LENGTH_SHORT).show();
                     } else {
                         new Thread(new Runnable() {
                             @Override
