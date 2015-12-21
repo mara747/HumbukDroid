@@ -39,9 +39,11 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
     private Xml.Encoding mEncoding = Xml.Encoding.UTF_8;
     protected NotificationCompat.Builder mBuilder;
     protected Context mCo;
+    protected int mId;
 
     public static void notifyMsg(int aId, String aTitle, String aDescr, NotificationCompat.Builder aBuilder, Context aCo) {
         Intent resultIntent = new Intent(aCo, MainActivity.class);
+        resultIntent.putExtra("msgID",aId);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         aCo,
@@ -63,13 +65,14 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         mNotifyMgr.notify(aId, notification);
     }
 
-    public RetrieveFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd, Context aCo) {
+    public RetrieveFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd, Context aCo, int aId) {
         this.mPd = aPd;
         this.mRssUrl = aRssUrl;
         this.mMesssages = aMsg;
         this.mAdp=aAdp;
         this.mCo=aCo;
         this.mBuilder = new NotificationCompat.Builder(aCo);
+        this.mId = aId;
     }
 
     public void setImgFeed(boolean aImgFeed){
@@ -102,7 +105,7 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         }
         else if(messages!=null) {
             Message lastMsg =  messages.get(0);
-            newMsgNotify(0, lastMsg.getTitle(),lastMsg.getDescription(),lastMsg.getRawDate());
+            newMsgNotify(mId, lastMsg.getTitle(),lastMsg.getDescription(),lastMsg.getRawDate());
         }
     }
 

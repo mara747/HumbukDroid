@@ -56,7 +56,7 @@ public class SendCommentActivity extends AppCompatActivity {
             msg.setTitle(getResources().getString(R.string.SendCommentDefaultTitle));
             mMsgList.add(msg);
             ProgressDialog pd = ProgressDialog.show(mCtx, "", getResources().getString(R.string.Loading), true);
-            new RetrieveFeedTask(mMsgList, mAdapter,getResources().getString(R.string.HumbukRssClanky),pd,this).execute();
+            new RetrieveFeedTask(mMsgList, mAdapter,getResources().getString(R.string.HumbukRssClanky),pd,this,RetrieveFeedsService.MSG_ID_CLANKY).execute();
         } else if (secNum==MainActivity.PlaceholderFragment.ARG_SECTION_KECALROOM)
         {
             msg = new Message();

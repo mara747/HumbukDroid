@@ -83,6 +83,14 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        Bundle extras = getIntent().getExtras();
+        int msgID;
+        if (extras != null) {
+            msgID = extras.getInt("msgID");
+            mViewPager.setCurrentItem(msgID);
+            getIntent().removeExtra("msgID");
+        }
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -321,24 +329,24 @@ public class MainActivity extends AppCompatActivity {
             switch (secNum) {
                 case ARG_SECTION_KOMENTARE:
                 {
-                    mRFT = new RetrieveFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssKomentare),pd,getContext().getApplicationContext());
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssKomentare),pd,getContext().getApplicationContext(),RetrieveFeedsService.MSG_ID_KOMENTARE);
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
                 case ARG_SECTION_CLANKY:
                 {
-                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssClanky),pd,getContext().getApplicationContext());
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssClanky),pd,getContext().getApplicationContext(),RetrieveFeedsService.MSG_ID_CLANKY);
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
                 case ARG_SECTION_KECALROOM:
                 {
-                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssKecalroom),pd,getContext().getApplicationContext());
+                    mRFT = new RetrieveFeedTask(mMsgList, mBa,getResources().getString(R.string.HumbukRssKecalroom),pd,getContext().getApplicationContext(),RetrieveFeedsService.MSG_ID_KECALROOM);
                     mRFT.setEncoding(Xml.Encoding.ISO_8859_1);
                     break;
                 }
                 case ARG_SECTION_FOTO: {
-                    mRFT = new RetrieveRajceFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssRajce),pd, getContext().getApplicationContext());
+                    mRFT = new RetrieveRajceFeedTask(mMsgList, mBa, getResources().getString(R.string.HumbukRssRajce),pd, getContext().getApplicationContext(),RetrieveFeedsService.MSG_ID_FOTOGALERIE);
                     mRFT.setImgFeed(true);
                     break;
                 }

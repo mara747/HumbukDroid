@@ -18,6 +18,11 @@ import android.util.Xml;
 public class RetrieveFeedsService extends Service {
 
     public static final long REPEAT_TIME = 1000 * 60 * 5;
+    public static final int MSG_ID_KOMENTARE = 0;
+    public static final int MSG_ID_CLANKY = 1;
+    public static final int MSG_ID_KECALROOM = 2;
+    public static final int MSG_ID_FOTOGALERIE = 3;
+    public static final int MSG_ID_ERR = 0;
 
     protected NotificationCompat.Builder mBuilder;
 
@@ -36,19 +41,19 @@ public class RetrieveFeedsService extends Service {
                 //Your logic that service will perform will be placed here
                 //In this example we are just looping and waits for 1000 milliseconds in each loop.
                 try {
-                    RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentareTop1), null, getApplicationContext());
+                    RetrieveFeedTask rftKomentare = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKomentareTop1), null, getApplicationContext(),MSG_ID_KOMENTARE);
                     rftKomentare.setEncoding(Xml.Encoding.ISO_8859_1);
                     rftKomentare.execute().get();
-                    RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssClankyTop1), null, getApplicationContext());
+                    RetrieveFeedTask rftClanky = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssClankyTop1), null, getApplicationContext(),MSG_ID_CLANKY);
                     rftClanky.setEncoding(Xml.Encoding.ISO_8859_1);
                     rftClanky.execute().get();
-                    RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKecalroomTop1), null, getApplicationContext());
+                    RetrieveFeedTask rftKecalroom = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssKecalroomTop1), null, getApplicationContext(),MSG_ID_KECALROOM);
                     rftKecalroom.setEncoding(Xml.Encoding.ISO_8859_1);
                     rftKecalroom.execute().get();
-                    RetrieveFeedTask rftRajce = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssRajceTop1), null, getApplicationContext());
+                    RetrieveFeedTask rftRajce = new RetrieveFeedTask(null, null, getResources().getString(R.string.HumbukRssRajceTop1), null, getApplicationContext(),MSG_ID_FOTOGALERIE);
                     rftRajce.execute().get();
                 } catch (Exception e) {
-                    RetrieveFeedTask.notifyMsg(001, "Chyba při čtení Karla - kontaktuj Máru:", e.getMessage(), mBuilder, getApplicationContext());
+                    RetrieveFeedTask.notifyMsg(MSG_ID_ERR, "Chyba při čtení Karla - kontaktuj Máru:", e.getMessage(), mBuilder, getApplicationContext());
                 }
             }
         }).start();

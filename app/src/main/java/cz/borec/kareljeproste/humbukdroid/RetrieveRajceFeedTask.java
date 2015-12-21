@@ -16,8 +16,8 @@ import java.util.List;
 public class RetrieveRajceFeedTask extends RetrieveFeedTask {
 
     //public RetrieveRajceFeedTask(List<Message> aMessages, ProgressDialog aPd) {
-    public RetrieveRajceFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd, Context aCo) {
-        super(aMsg, aAdp, aRssUrl, aPd, aCo);
+    public RetrieveRajceFeedTask(List<Message> aMsg, BaseAdapter aAdp, String aRssUrl, ProgressDialog aPd, Context aCo, int aId) {
+        super(aMsg, aAdp, aRssUrl, aPd, aCo, aId);
     }
 
     protected void onPostExecute(List<Message> messages) {
@@ -38,7 +38,7 @@ public class RetrieveRajceFeedTask extends RetrieveFeedTask {
             mPd.dismiss();
         } else if(messages!=null) {
             Message lastMsg =  messages.get(0);
-            newMsgNotify(0,"Nové Fotoalbum",lastMsg.getTitle(),lastMsg.getRawDate());
+            newMsgNotify(mId,"Nové Fotoalbum",lastMsg.getTitle(),lastMsg.getRawDate());
         }
     }
 }
