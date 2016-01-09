@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -118,6 +119,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        SharedPreferences settings = getApplicationContext().getSharedPreferences("HumbukDroidPrefsName", 0);
+        Boolean notifiMuted = settings.getBoolean("NotificationMute", false);
+        menu.findItem(R.id.mute).setChecked(notifiMuted);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -133,6 +143,19 @@ public class MainActivity extends AppCompatActivity {
                     if (fragment!=null)
                         fragment.retrieveFeedsTask(true);
                 }
+        }
+        else if (id==R.id.mute)
+        {
+            SharedPreferences settings = getApplicationContext().getSharedPreferences("HumbukDroidPrefsName", 0);
+            SharedPreferences.Editor editor = settings.edit();
+            if (item.isChecked() == true) {
+                editor.putBoolean("NotificationMute",false);
+                item.setChecked(false);
+            } else {
+                editor.putBoolean("NotificationMute",true);
+                item.setChecked(true);
+            }
+            editor.commit();
         }
         else if (id==R.id.about)
         {

@@ -58,8 +58,13 @@ public class RetrieveFeedTask extends AsyncTask<String, Void, List<Message>> {
         NotificationManager mNotifyMgr =
                 (NotificationManager) aCo.getSystemService(aCo.NOTIFICATION_SERVICE);
 
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        aBuilder.setSound(alarmSound);
+        SharedPreferences settings = aCo.getSharedPreferences("HumbukDroidPrefsName", 0);
+        Boolean notifiMuted = settings.getBoolean("NotificationMute", false);
+        if (!notifiMuted)
+        {
+            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            aBuilder.setSound(alarmSound);
+        }
         Notification notification = aBuilder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         mNotifyMgr.notify(aId, notification);

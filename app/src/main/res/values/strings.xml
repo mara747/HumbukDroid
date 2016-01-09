@@ -23,4 +23,5 @@
     <string name="SendCommentNameErr">"Jméno Karle!"</string>
     <string name="SendCommentTextErr">"Ještě text Karle!"</string>
     <string name="slunceAbout">slunceAbout</string>
+    <string name="NotificationCheckBox">Ztlumit</string>
 </resources>

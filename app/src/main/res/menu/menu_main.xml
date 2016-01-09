@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/refresh" android:title="@string/RefreshText"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/mute"
+        android:title="@string/NotificationCheckBox"
+        android:checkable="true"
+        android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/about" android:title="@string/AboutText"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>
